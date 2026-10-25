@@ -38,7 +38,7 @@ include = ["pt2mirandese*"]
 version = {attr = "pt2mirandese.version.VERSION_STR"}
 
 [tool.setuptools.package-data]
-pt2mirandese = ["data/*.tsv"]
+pt2mirandese = ["data/*.tsv", "data/*.txt"]
 
 [tool.ruff]
 line-length = 120

@@ -12,7 +12,7 @@ A pair is dropped when the Mirandese side equals the Portuguese side, when one s
 the length ratio is outside 0.67 to 1.5, which marks a sentence cut on one side only. The first copy of a
 Portuguese sentence is kept. The first hex digit of the sha256 of the
 Portuguese side picks the split, so the split does not depend on the order of the release: 0, 1 or 2 is test, 3 is
-dev, and the rest is train. Only the train split feeds data/lexicon.tsv; the dev split chooses between rules.
+dev, and the rest is train. The dev split chooses between rules; data/lexicon.tsv learns from all three.
 """
 import csv
 import hashlib

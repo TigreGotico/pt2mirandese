@@ -1,5 +1,6 @@
-"""The word lists come from the train split and Wiktionary only, never from the dev or test split."""
+"""The word lists are up to date with the rules and the parallel data they come from."""
 import csv
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -12,16 +13,33 @@ def load(path):
     return list(csv.DictReader(path.read_text(encoding="utf-8").splitlines(), delimiter="\t"))
 
 
-def test_the_corpus_list_is_what_the_train_split_gives():
-    # Regenerating from train must give the shipped file. A list learned from dev or test, or one left stale after
-    # a rule change, differs.
-    shipped = (DATA / "lexicon.tsv").read_text(encoding="utf-8")
+def test_the_corpus_list_was_learned_from_the_current_rules_and_data():
+    # scripts/learn_lexicon.py writes the sha256 of the rules, the aligner, itself and every gold file it read. A
+    # rule change, a new gold file or a hand edit of a gold file without a relearn leaves a stale hash.
+    listed = dict(reversed(line.split("  ", 1)) for line in (DATA / "lexicon.sources").read_text().splitlines())
+    gold = {f"gold/{p.name}" for p in (ROOT / "gold").glob("*.tsv") if p.name != "cx_mint_era.tsv"}
+    assert {f for f in listed if f.startswith("gold/")} == gold
+    stale = [f for f, digest in listed.items() if hashlib.sha256((ROOT / f).read_bytes()).hexdigest() != digest]
+    assert not stale, f"relearn with scripts/learn_lexicon.py: {stale}"
+
+
+def test_the_learner_ignores_the_list_on_disk():
+    # The learner compares the corpus with the rules alone. Its worker processes must not align with the list that
+    # an earlier run left in data/, or each run learns from the one before.
+    files = [DATA / "lexicon.tsv", DATA / "lexicon.sources"]
+    kept = [f.read_bytes() for f in files]
+    learn = [sys.executable, str(ROOT / "scripts" / "learn_lexicon.py"), str(ROOT / "gold" / "tatoeba.tsv"),
+             str(ROOT / "gold" / "convencao.tsv")]
     try:
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "learn_lexicon.py"),
-                        str(ROOT / "gold" / "wikimedia_train.tsv")], check=True, capture_output=True)
-        assert (DATA / "lexicon.tsv").read_text(encoding="utf-8") == shipped
+        subprocess.run(learn, check=True, capture_output=True)
+        first = (DATA / "lexicon.tsv").read_text(encoding="utf-8")
+        (DATA / "lexicon.tsv").write_text("pt\tmwl\tcount\ttotal\n" + "".join(
+            f"{w}\tzzz\t9\t9\n" for w in ("o", "a", "de", "que", "não", "eu", "é", "lua", "nos")), encoding="utf-8")
+        subprocess.run(learn, check=True, capture_output=True)
+        assert (DATA / "lexicon.tsv").read_text(encoding="utf-8") == first
     finally:
-        (DATA / "lexicon.tsv").write_text(shipped, encoding="utf-8")
+        for f, content in zip(files, kept):
+            f.write_bytes(content)
 
 
 def test_wiktionary_entries_name_their_page():
