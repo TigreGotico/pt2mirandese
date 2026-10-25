@@ -1,0 +1,79 @@
+id	rule	class	source	section	pdf_page	quote	pt	mwl	pt_basis	in_wiktionary
+R01	definite article o, a, os, as > l, la, ls, las; la > l' before a vowel	closed	Convenção 1999	Artigos 1. Artigo definido	23	a solução adoptada dispensa o apóstrofo, excepto na forma feminina singular antes de vogal: l'auga.	a água	l'auga	gloss	no
+R02	l' for la before a vowel	closed	Convenção 1999	Apóstrofo 2	21	É utilizado no artigo feminino singular, la, quando a palavra seguinte começa por vogal: l'alma.	a alma	l'alma	gloss	no
+R03	indefinite article um, uma, uns, umas > un, ũa, uns, ũas	closed	Convenção 1999	Representação da nasalidade; Artigos 2	19;24	Para estas palavras recomenda-se o emprego de til sobre o u (ũa, algũa, etc.).	uma	ũa	gloss	yes
+R04	a + masculine article contracts (al, als); a + feminine stays apart (a la, a las)	closed	Convenção 1999	Preposições 3	24	a preposição a contrai-se apenas com o artigo masculino e pronuncia-se [al], [als], conservando-se separada se o artigo é feminino.	à primeira fila	a la purmeira fila	gloss	no
+R05	de + article stays apart: do > de l, da > de la; para o > pa l; com o > cul	closed	Convenção 1999	Preposições 3	24;25	Alhebantando pa l ciêlo ls uôlhos	levantando para o céu os olhos	alhebantando pa l ciêlo ls uôlhos	gloss	no
+R06	com os > culs; o peito do > l peito de l	closed	Convenção 1999	Preposições 3	25	I bai-se culs filhos i la mulhier	e vai-se com os filhos e a mulher	i bai-se culs filhos i la mulhier	gloss	no
+R07	em + o > ne l or no; em + a > na; por + o > pul; por + a > pula	closed	Convenção 1999	Preposições 3	24	As formas en, an, ne l, no são variantes locais que representam estados de evolução diferentes e diferentes contextos de utilização.	no	ne l	gloss	yes
+R08	preposition + indefinite: num > nun, numa > nũa, dum > dun, duma > dũa, com um > c'un	closed	Convenção 1999	Preposições 4	25	de un dun nun de ũa dũa nũa	numa	nũa	gloss	no
+R09	initial l + vowel > lh in the traditional lexicon; l- stays in neologisms, loans and proper names	regular	Convenção 1999	Alfabeto: L	15	L- em início de palavra e seguido de vogal existe apenas em neologismos, empréstimos e nomes próprios; no léxico mirandês tradicional integra sempre o dígrafo lh-.	leite	lheite	gloss	yes
+R10	lh-, not ll-, for the initial palatal	regular	Convenção 1999	Princípios gerais III	7	Por isso se recomenda a escrita lhuna e não lluna, de acordo com a tradição escrita mirandesa.	lua	lhuna	gloss	yes
+R11	Latin intervocalic -l- kept where Portuguese lost it	lexical	Convenção 1999	Alfabeto: L	15	A manutenção do l intervocálico latino é uma das principais diferenças do mirandês em relação ao galego e ao português (salir, malo).	sair	salir	gloss	yes
+R12	Latin intervocalic -n- kept where Portuguese lost it	lexical	Convenção 1999	Alfabeto: N	15	A manutenção do n intervocálico latino é outro traço distintivo do mirandês (cheno) em relação ao galego e ao português (cheo, cheio).	cheio	cheno	printed	yes
+R13	nh from Latin -nn- where Portuguese has n	lexical	Convenção 1999	Alfabeto: NH	15	anho (port. ano), canha (port. cana).	ano	anho	printed	yes
+R14	stressed open e > ie (written iê in 1999, ie after the 2000 Adenda)	lexical	Convenção 1999	Grafia dos ditongos 1	18	Geralmente, o mirandês apresenta iê em palavras que em português têm [E] aberto e o espanhol e asturiano [jE] (port. terra, esp., ast. tierra).	terra	tiêrra	printed	yes
+R15	stressed open o > uo (written uô in 1999, uo after the 2000 Adenda)	lexical	Convenção 1999	Grafia dos ditongos 1	18	Do mesmo modo, o mirandês tem uô em palavras onde o port. apresenta [ç] aberto, o espanhol ue e o asturiano ue ou uo.	porta	puôrta	gloss	yes
+R16	the 2000 Adenda drops the circumflex of iê and uô	regular	Ferreira 2003 (RFA 3-4)	Resposta a uma recensão crítica	15 (printed 341)	foi criada uma Adenda que eliminava o acento circunflexo dos ditongos iê e uô	porta	puorta	gloss	yes
+R17	ie and uo reduce to a vowel when the syllable loses stress	regular	Convenção 1999	Grafia dos ditongos 1	18	fuônte - funtica; fiêrro - ferrico.	fontinha	funtica	gloss	no
+R18	é (3sg of ser) > yê (ye after the Adenda)	closed	Convenção 1999	Grafia dos ditongos 1	18	O ditongo [je] escreve-se yê na 3ª pessoa do singular do presente do indicativo do verbo ser	é	yê	gloss	no
+R19	já > yá	closed	Convenção 1999	Grafia dos ditongos 1	18	A palavra yá (port. já) é uma excepção de escrita que segue a tradição leonesa.	já	yá	printed	yes
+R20	v > b	regular	Convenção 1999	Alfabeto: V	17	O som [v] não existe em mirandês, ocorrendo em seu lugar [b] ou [B].	vida	bida	gloss	yes
+R21	final -z > -ç; z is never final	regular	Convenção 1999	Alfabeto: Z; Ç	17;13	Não se utiliza esta letra em fim de palavra, mas apenas no início, entre vogais ou antes de sílaba iniciada por consoante sonora.	paz	paç	gloss	yes
+R22	dorsal sibilant before a voiceless consonant is ç	lexical	Convenção 1999	Alfabeto: Ç	13	Esta letra tem o mesmo valor quando está seguida de consoante surda (cuçpir, çcalçar, çfechar, çquilar, çtapar) e no fim de palavra (paç).	cuspir	cuçpir	gloss	no
+R23	dorsal sibilant before a voiced consonant is z (des- > z-)	lexical	Convenção 1999	Alfabeto: Z	11	znudar, zgusto	desnudar	znudar	gloss	no
+R24	initial es + consonant > s + consonant	regular	Convenção 1999	Alfabeto: S, note 11	16;17	Em início de vocábulo, s-, como representação de [s6] apical surdo, pode aparecer antes de vogal ou de consoante (saber, semitério, screbir)	escada	scalada	printed	no
+R25	word-final nasal written n, not m	regular	Convenção 1999	Princípios gerais II; Representação da nasalidade	7;19	Em fim de palavra adopta-se a escrita Vogal + n (coraçon, melon, freijon).	coração	coraçon	gloss	yes
+R26	inside a word: m before p, b; n before other consonants	regular	Convenção 1999	Representação da nasalidade	19	m antes de p e b (cumpanheiro, cumbite) e n antes de qualquer outra consoante (honra, binte).	vinte	binte	gloss	yes
+R27	Portuguese om, on in a pretonic syllable > um, un	regular	Convenção 1999	Representação da nasalidade	19	em muitas palavras onde o português escreve om o mirandês tem um (cumbidado).	convidado	cumbidado	gloss	yes
+R28	unstressed final -o stays -o, never -u	regular	Convenção 1999	Alfabeto: O	16	não recebe qualquer acento, mas também não é substuída pela letra u (nobenta, ganado).	noventa	nobenta	gloss	yes
+R29	unstressed -il in a proparoxytone > -ele	regular	Convenção 1999	Acento 2.3.1	21	(próssimo, Márcio, própio, notícia, defrência, óndia, fácele, carátele).	fácil	fácele	gloss	yes
+R30	stressed final -ia > -ie (no accent)	regular	Convenção 1999	Acento 2.1.2.1	20	As palavras como mie (pronome possessivo), tenie, tenerie, darie, (formas verbais), Marie, die, não são acentuadas	dia	die	gloss	yes
+R31	final -io, -eus > -iu	lexical	Convenção 1999	Grafia dos ditongos 2	19	iu: Dius, friu, niu, ardiu, miu, morriu, comiu.	frio	friu	gloss	yes
+R32	a palatal consonant adds i to the syllable before it	lexical	Convenção 1999	Grafia dos ditongos 2, note 15	19	Em mirandês as consoantes palatais podem desenvolver uma semivogal [j] na sílaba anterior, como acontece em outras zonas do norte de Portugal, onde se diz cereija, hoije, coixo.	hoje	hoije	gloss	yes
+R33	etymological h is kept	regular	Convenção 1999	Alfabeto: H	14	O mirandês conserva o h etimológico na maior parte dos casos.	homem	home	gloss	yes
+R34	s near a palatal vowel becomes j in some words	lexical	Convenção 1999	Alfabeto: J	15	usa-se a letra j em vez de s (rejistir, quijo, quaije).	quase	quaije	gloss	yes
+R35	Portuguese o, oi > u, ui in some words	lexical	Convenção 1999	Alfabeto: U	17	port. for, boi, coiro; esp. fuere, buey, cuero; mir. fur, bui, cuiro.	boi	bui	printed	yes
+R36	y in yê, you, yá, yêuga, yêrba	closed	Convenção 1999	Alfabeto: Y	17	Esta letra y representa a semivogal anterior [j] (por vezes levemente fricatizada) nos vocábulos yê, you, yá, yêuga, yêrba e yêrbo	eu	you	gloss	yes
+R37	conjunction e > i	closed	Convenção 1999	Princípios gerais III	7	(y em palavras como you, yá; i na conjunção i).	e	i	gloss	yes
+R38	subject pronouns: you, tu, el, eilha, nós, bós, eilhes, eilhas	closed	Convenção 1999	Pronomes 1	25	you tu el eilha nós bós eilhes eilhas	ela	eilha	gloss	yes
+R39	object pronouns: me, te, lo/l, la, mos, bos, les/los, las; indirect le, les	closed	Convenção 1999	Pronomes 1	25	me te lo, l la mos bos les, los las	nos	mos	gloss	no
+R40	2nd person plural (bós) is the respectful address	closed	Convenção 1999	Pronomes 1, Obs.	26	A segunda pessoa do plural, tanto dos pronomes pessoais como dos possessivos, é utilizada regularmente para com um interlocutor mais velho ou que mereça mais respeito.	vós	bós	gloss	yes
+R41	indirect + direct object: me-lo, te-lo, le-lo/lo, mos-lo, bos-lo	closed	Convenção 1999	Pronomes 1.1	26	Manhana dás-me l bolho; tu dás-me-lo manhana.	amanhã dás-mo	manhana dás-me-lo	gloss	no
+R42	com + pronoun: cumigo, cuntigo, cun el	closed	Convenção 1999	Pronomes 1.2	26	cumigo/ cun mi28	comigo	cumigo	gloss	yes
+R43	possessives: miu, tou, sou, nuôsso, buôsso; mie, tue, sue; mius, tous, sous; mies, tues, sues	closed	Convenção 1999	Pronomes 2	27	miu tou sou nuôsso buôsso sou mie tue sue nuôssa buôssa sue	meu	miu	gloss	yes
+R44	3rd person possession with de: del, deilha, deilhes, deilhas	closed	Convenção 1999	Pronomes 2	27	You dei-le l coneilho que era del.	dele	del	gloss	yes
+R45	demonstratives: este, esse, aquel, aqueilha, aquilho, aqueilhes, aqueilhas	closed	Convenção 1999	Pronomes 3	27	aquel, lo, l aqueilha, la aquilho, l aqueilho	aquele	aquel	gloss	yes
+R46	indefinites: algun, algũa, ningun/niun, todo, outro, ciêrto, qualquiêra, muito, pouco, tanto, bários; algo, alguien, naide, nada	closed	Convenção 1999	Pronomes 4	28	Algo, alguien, cada, demás, más / mais, menos, nada, naide, todo.	ninguém	naide	gloss	yes
+R47	relatives and interrogatives: que, quien, qual/quales, quanto	closed	Convenção 1999	Pronomes 5	28	5.2. Formas invariáveis: que, quien.	quem	quien	gloss	yes
+R48	coordinating conjunctions: i, nin/nien, ou, mas	closed	Convenção 1999	Conjunções coordenativas	28	Copulativas: i, nin / nien.	nem	nin	gloss	no
+R49	prepositions: a, an/en/ne, antre, cun, de, para/pra/pa, por/po, sin/sien, subre, até/anté	closed	Convenção 1999	Preposições 1	24	Formas essenciais: a, an/ en/ ne, ante, antre, apuis, até/ anté, cun, contra, cunforme, cunsante, de, dende, desde, menos, para/ pra/ pa, por/ po, salbo, sin/ sien, subre, trás, tirante.	com	cun	gloss	yes
+R50	negation não > nun; nó at a pause	closed	Convenção 1999	Advérbios: de negação	29	De negação: nun, nó (em pausa).	não	nun	gloss	yes
+R51	adverbs of place: eiqui, alhi, acá, alhá, adonde, longe, drento, fuôra	closed	Convenção 1999	Advérbios: de lugar	29	adonde32	onde	adonde	gloss	yes
+R52	adverbs of time: agora, anton, hoije, inda, lhougo, manhana, nunca, onte, siêmpre, yá	closed	Convenção 1999	Advérbios: de tempo	30	agora, a las bezes, anton, astanho36, cedo, dantes, datrás, hoije; inda; lhougo, manhana, nunca, onte	ontem	onte	gloss	yes
+R53	também > tamien	closed	Convenção 1999	Pronomes 1, Exemplos de aplicação	25	El bai alhá nun solo por ber-te, mas tamien por te pedir algo.	também	tamien	gloss	yes
+R54	1st conjugation present: -o, -as, -a, -amos, -ais, -an (3pl stressed on the stem, written with an acute)	regular	Convenção 1999	Verbos regulares, 1ª conjugação	31	canto cantas canta cantamos cantais cántan	cantam	cántan	gloss	no
+R55	1st conjugation imperfect -aba (pt -ava)	regular	Convenção 1999	Verbos regulares, 1ª conjugação	31	cantaba cantabas cantaba cantábamos cantábades cantában	cantava	cantaba	gloss	no
+R56	1st conjugation preterite: cantei, canteste, cantou, cantemos, cantestes, cantórun	regular	Convenção 1999	Verbos regulares, 1ª conjugação	31	cantei canteste cantou cantemos cantestes cantórun	cantaram	cantórun	gloss	no
+R57	future -arei, -arás, -ará, -aremos, -areis, -aran	regular	Convenção 1999	Verbos regulares, 1ª conjugação	31	cantarei cantarás cantará cantaremos cantareis cantaran	cantarão	cantaran	gloss	no
+R58	conditional -arie, -aries, -arie, -ariemos, -ariedes, -arien	regular	Convenção 1999	Verbos regulares, 1ª conjugação	31	cantarie cantaries cantarie cantariemos cantariedes cantarien	cantaria	cantarie	gloss	no
+R59	2nd conjugation: como, comes, come, comemos, comeis, cómen; imperfect comie; preterite comi, comiste, comiu, comírun	regular	Convenção 1999	Verbos regulares, 2ª conjugação	32	comie comies comie comiemos comiedes comien	comia	comie	gloss	no
+R60	3rd conjugation: parto, partes, parte, partimos, partis, párten; imperfect partie; preterite partiu, partírun	regular	Convenção 1999	Verbos regulares, 3ª conjugação	33	parti partiste partiu partimos partistes partírun	partiram	partírun	gloss	no
+R61	ser present: sou, sós, yê, somos, sodes, son	closed	Convenção 1999	Verbos tener, ser e star	34	sou sós yê somos sodes son	são	son	gloss	no
+R62	estar > star: stou, stás, stá, stamos, stais, stan	closed	Convenção 1999	Verbos tener, ser e star	34	stou stás stá stamos stais stan	estou	stou	gloss	no
+R63	ter > tener: tengo, tenes, ten, tenemos, teneis, ténen	closed	Convenção 1999	Verbos tener, ser e star	34	tengo tenes ten tenemos teneis ténen	tenho	tengo	gloss	no
+R64	ir present: bou, bás, bai, bamos, ides, ban	closed	Convenção 1999	Verbos irregulares: ir	46	bou bás bai bamos ides ban	vou	bou	gloss	no
+R65	haver > haber: hei, hás, há/hai, hemos, heis, han	closed	Convenção 1999	Verbos irregulares: haber	45	hei hás há / hai hemos heis han	há	hai	gloss	no
+R66	fazer: fago, fais, fai/faç, fazemos, fazeis, fáien/fázen	closed	Convenção 1999	Verbos irregulares: fazer	44	fago fais fai / faç fazemos fazeis fáien / fázen	faço	fago	gloss	no
+R67	dizer > dezir: digo, dizes, diç, dezimos, dezis, dízen; preterite dixe, dixo	closed	Convenção 1999	Verbos irregulares: dezir	42	digo dizes diç dezimos dezis dízen	diz	diç	gloss	no
+R68	ver > ber: beio, bés, bei, bemos, bedes, béien	closed	Convenção 1999	Verbos irregulares: ber	38	beio bés bei bemos bedes béien	vejo	beio	gloss	no
+R69	vir > benir: bengo, benes, ben, benimos, benis, bénen	closed	Convenção 1999	Verbos irregulares: benir	37	bengo benes ben benimos benis bénen	venho	bengo	gloss	no
+R70	querer: quiêro, quiêres, quier, queremos, quereis, quiêren	closed	Convenção 1999	Verbos irregulares: querer	49	quiêro quiêres quier queremos quereis quiêren	quero	quiêro	gloss	no
+R71	saber: sei, sabes, sabe, sabemos, sabeis, sáben	closed	Convenção 1999	Verbos irregulares: saber	50	sei sabes sabe sabemos sabeis sáben	sabem	sáben	gloss	no
+R72	enclitic pronouns join the verb with a hyphen, as in Portuguese	regular	Convenção 1999	Hífen 2	22	Ligar os pronomes complemento ao verbo de que dependem e que os precede: dá-me-lo.	dá-mo	dá-me-lo	gloss	no
+R73	paroxytones in -ç, -r, -l, -n take an acute (cánten, póngan)	regular	Convenção 1999	Acento 2.2.2	21	As palavras graves terminadas em -ç, -r, -l, -n e que tenham vogal oral ou nasal na sílaba tónica recebem acento agudo (lápeç, álbun, cánten, póngan, ampeçórun, stubírun).	cantem	cánten	gloss	no
+R74	numerals 1-10: un/ũa, dous/dues, trés, quatro, cinco, seis, siête, uito, nuôbe, dieç	closed	Convenção 1999	Numerais	55	1 -Un, Ũa 2 - Dous, Dues 3 - Trés 4 - Quatro 5 - Cinco 6 - Seis 7 - Siête 8 -Uito 9 - Nuôbe 10 - Dieç	duas	dues	gloss	yes
+R75	hundreds: cien, duziêntos, treziêntos, quatro ciêntos	closed	Convenção 1999	Numerais	55	100 - Cien 200 - Duziêntos 300 - Treziêntos 400 - Quatro ciêntos	duzentos	duziêntos	gloss	yes
+R76	weekdays and months	closed	Convenção 1999	Dias da semana; Meses do ano	55	Segunda, Terça, Quarta, Quinta, Sesta, Sábado, Deimingo / Demingo.	domingo	deimingo	gloss	yes
+R77	initial pl- gave ch- in the oldest words, as in Portuguese	lexical	Vasconcelos 1900 vol. I	Phonetica: pl inicial	307 (printed 283)	nas palavras mais antigas, deu ch-, como em port., ex.: plenu- > mir. cheno	cheio	cheno	printed	yes
+R78	encher > anchir (Portuguese en- > an-)	regular	Convenção 1999	Amostragem de verbos irregulares: anchir, note 38	36	"38 Português ""encher""."	encher	anchir	printed	yes
