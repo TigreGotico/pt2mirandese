@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Português → Mirandés</title>
+<style>
+  :root { --bg: #fbf8f3; --fg: #222; --muted: #666; --card: #fff; --line: #ddd5c8; --accent: #a8432a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1b1a18; --fg: #eee; --muted: #aaa; --card: #262421; --line: #3d3934; --accent: #e07a5f; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 8px; font-size: 1.6rem; }
+  p { color: var(--muted); max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 600; margin-bottom: 4px; }
+  textarea { width: 100%; min-height: 180px; padding: 12px; font: inherit; color: var(--fg); background: var(--card);
+             border: 1px solid var(--line); border-radius: 8px; resize: vertical; }
+  textarea:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; border-radius: 8px; cursor: pointer; }
+  #go { margin-top: 12px; padding: 10px 20px; border: 0; background: var(--accent); color: #fff; font-weight: 600; }
+  #go:disabled { opacity: .5; cursor: wait; }
+  #status { margin-left: 12px; color: var(--muted); }
+  .examples { margin-top: 24px; }
+  .examples button { margin: 4px 4px 0 0; padding: 6px 10px; border: 1px solid var(--line); background: var(--card);
+                     color: var(--fg); text-align: left; }
+  footer { margin-top: 32px; font-size: .9rem; color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Português → Mirandés</h1>
+  <p>Mirandese (<em>lhéngua mirandesa</em>) is an Astur-Leonese language of the Terra de Miranda, in north-east
+  Portugal. This page translates European Portuguese into Mirandese with hand-written rules from the
+  <em>Convenção Ortográfica da Língua Mirandesa</em> (1999) and word lists learned from Wikipedia, Wiktionary and the
+  Lhenguabase. Where the corpus and the Convenção differ, it follows the Convenção.</p>
+  <p>It is not a native translation: no speaker has reviewed the output, and rules miss idioms and words they have
+  never seen. Each line is translated on its own, in your browser.</p>
+  <div class="grid">
+    <div>
+      <label for="src">Português</label>
+      <textarea id="src" placeholder="Escreva uma frase em português europeu."></textarea>
+    </div>
+    <div>
+      <label for="out">Mirandés</label>
+      <textarea id="out" readonly aria-live="polite"></textarea>
+    </div>
+  </div>
+  <button id="go" disabled>Traduzir</button><span id="status" role="status">A carregar…</span>
+  <div class="examples" id="examples"><strong>Exemplos</strong><br></div>
+  <footer>Code, rules and tests:
+    <a href="https://github.com/TigreGotico/pt2mirandese">TigreGotico/pt2mirandese</a> (Apache-2.0; word lists
+    CC-BY-SA 4.0).</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+const EXAMPLES = [
+  "O livro do meu pai está na mesa.",
+  "Ela foi com o irmão para a escola e começou a escrever um poema.",
+  "A língua mirandesa é falada em Miranda do Douro.",
+  "Amanhã vamos à feira comprar pão e leite.",
+  "A lua estava muito bonita esta noite.",
+  "Falei com o Virgílio na Universidade de Lisboa.",
+  "Não sei onde deixei as chaves de casa.",
+  "As crianças brincavam na rua até tarde.",
+];
+const src = document.getElementById("src"), out = document.getElementById("out");
+const go = document.getElementById("go"), status = document.getElementById("status");
+let translate = null;
+
+function convert() {
+  if (translate) out.value = src.value.split("\n").map(line => translate(line)).join("\n");
+}
+
+for (const text of EXAMPLES) {
+  const b = document.createElement("button");
+  b.textContent = text;
+  b.addEventListener("click", () => { src.value = text; convert(); });
+  document.getElementById("examples").appendChild(b);
+}
+go.addEventListener("click", convert);
+src.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) convert(); });
+
+(async () => {
+  try {
+    const pyodide = await loadPyodide();
+    pyodide.FS.mkdir("pt2mirandese");
+    pyodide.FS.mkdir("pt2mirandese/data");
+    const files = ["__init__.py", "version.py", "data/common.txt", "data/convencao.tsv", "data/lexicon.tsv",
+                   "data/lh.tsv", "data/lhenguabase.tsv", "data/names.txt", "data/native.tsv", "data/wiktionary.tsv"];
+    for (const name of files) {
+      const response = await fetch(`pt2mirandese/${name}`);
+      if (!response.ok) throw new Error(`${name}: ${response.status}`);
+      pyodide.FS.writeFile(`pt2mirandese/${name}`, await response.text());
+    }
+    pyodide.runPython("import sys; sys.path.insert(0, '.')");
+    translate = pyodide.pyimport("pt2mirandese").translate;
+    go.disabled = false;
+    status.textContent = "";
+    if (src.value) convert();
+  } catch (err) {
+    status.textContent = "Não foi possível carregar o tradutor: " + err;
+  }
+})();
+</script>
+</body>
+</html>

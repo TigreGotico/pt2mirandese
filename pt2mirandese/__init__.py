@@ -55,7 +55,7 @@ CLOSED = {
     # desde 0); the Convenção p. 24 prints dende and desde.
     "em": "an", "com": "cun", "entre": "antre", "sobre": "subre", "sem": "sin", "desde": "zde",
     # Adverbs, Convenção p. 29-30; não > nun, p. 29.
-    "não": "nun", "aqui": "eiqui", "ali": "alhi", "lá": "alhá", "onde": "adonde", "dentro": "drento",
+    "não": "nun", "aqui": "eiqui", "ali": "eilhi", "lá": "alhá", "onde": "adonde", "dentro": "drento",
     "fora": "fuora", "então": "anton", "hoje": "hoije", "ainda": "inda", "logo": "lhougo", "amanhã": "manhana",
     "ontem": "onte", "sempre": "siempre", "já": "yá", "também": "tamien", "assim": "assi", "bem": "bien",
     "depois": "depuis", "muito": "mui", "como": "cumo",
@@ -169,6 +169,37 @@ LH_VERB = re.compile("(?:" + "|".join(sorted(w[:-2] for w in LH if w.endswith("a
                      r"|ados|adas|arie|aries|arien|arei|arás|ará|aremos|areis|aran|e|es|emos|en|ira|iras|ásse|ássen)")
 
 
+# Corrections from a native speaker win over every other source (data/native.tsv). A verb row gives the Mirandese
+# stem of every form: brincar > gaiar, brincavam > gaiában.
+with (resources.files(__package__) / "data" / "native.tsv").open(encoding="utf-8") as _f:
+    _native = list(csv.DictReader(_f, delimiter="\t"))
+NATIVE = {r["pt"]: r["mwl"] for r in _native if r["kind"] == "word"}
+NATIVE_VERB = {r["pt"][:-2]: r["mwl"][:-2] for r in _native if r["kind"] == "verb"}
+PT_AR = re.compile(r"ar|o|as|a|amos|ais|am|aste|ou|ámos|astes|aram|ava|avas|ávamos|áveis|avam|ando|ado|ada|ados"
+                   r"|adas|aria|arias|aríamos|aríeis|ariam|arei|arás|ará|aremos|areis|arão|ara|aras|áramos|áreis"
+                   r"|asse|asses|ássemos|ásseis|assem|armos|ardes|arem")
+# Before e the stem changes its spelling: brinc- > brinqu- (brinquei), carreg- > carregu-, começ- > comec-.
+PT_AR_FRONT = re.compile(r"ei|e|es|emos|eis|em")
+
+
+def _front(stem: str) -> str:
+    return stem[:-1] + {"c": "qu", "g": "gu", "ç": "c"}.get(stem[-1], stem[-1])
+
+
+def _native_verb(w: str) -> str:
+    for pt, mwl in NATIVE_VERB.items():
+        for a, b, endings in ((pt, mwl, PT_AR), (_front(pt), _front(mwl), PT_AR_FRONT)):
+            if w.startswith(a) and endings.fullmatch(w[len(a):]):
+                return rules(b + w[len(a):])
+    return ""
+
+
+# Given names, which take no article in Mirandese: falei cun Virgílio (scripts/build_names.py).
+NAMES = set((resources.files(__package__) / "data" / "names.txt").read_text(encoding="utf-8").split())
+# A preposition with an article before a name keeps the preposition alone.
+BEFORE_NAME = {"o": "", "a": "", "do": "de", "da": "de", "no": "an", "na": "an", "ao": "a", "à": "a", "pelo": "por",
+               "pela": "por"}
+
 # Capitalised common words, which the proper-name rule leaves to the word list and the rules
 # (scripts/build_common.py).
 COMMON = set((resources.files(__package__) / "data" / "common.txt").read_text(encoding="utf-8").split())
@@ -226,6 +257,10 @@ def rules(w: str, name: bool = False) -> str:
     w = w.translate(str.maketrans("âêô", "áéó"))
     # Final -z > -ç, Convenção p. 13 and 17: paç.
     w = re.sub(r"z$", "ç", w)
+    # The 3rd plural imperfect -avam is stressed on its first syllable, Convenção p. 31: cantában. Corpus: -ában
+    # 3,014 times against 53.
+    # A stem with no vowel (gravam, travam) is a present tense of a verb in -avar: graban.
+    w = re.sub(r"([aeiouáéíóúâêôãõ][^aeiouáéíóúâêôãõ]*)avam$", r"\1ávam", w)
     # A final nasal is written n, Convenção p. 19.
     w = re.sub(r"(?<=[aeiou])m$", "n", w)
     # Mirandese has no v, Convenção p. 17, but proper names keep an official V (Virgílio); m before b and p,
@@ -235,8 +270,12 @@ def rules(w: str, name: bool = False) -> str:
 
 def word(w: str) -> str:
     """Translate one lowercase word with no context."""
+    if w in NATIVE:
+        return NATIVE[w]
     if w in CLOSED:
         return CLOSED[w]
+    if verb := _native_verb(w):
+        return verb
     if w in CONVENCAO:
         return CONVENCAO[w]
     if w in LEXICON:
@@ -282,10 +321,32 @@ def translate(text: str) -> str:
         if abbreviation or ROMAN.fullmatch(tokens[i]):
             continue
         nxt = words[n + 1] if n + 1 < len(words) else None
+        after = words[n + 2] if n + 2 < len(words) else None
+        if (low == "com" and nxt == i + 2 and tokens[nxt].lower() in ("o", "a") and after == nxt + 2
+                and tokens[after] in NAMES):
+            out[i] = _case(tokens[i], "cun")
+            out[i + 1] = out[nxt] = ""
+            skip.add(nxt)
+            continue
+        if low in BEFORE_NAME and nxt == i + 2 and tokens[nxt] in NAMES:
+            # a before a name that does not end in -a is the preposition: dedicados a Symmachus.
+            if low == "a" and not tokens[nxt].endswith("a"):
+                continue
+            out[i] = _case(tokens[i], BEFORE_NAME[low])
+            if not out[i]:
+                out[i + 1] = ""
+            continue
         if low in ARTICLE_AFTER and nxt is not None and nxt == i + 2 and tokens[nxt].lower() in ARTICLE_AFTER[low]:
             out[i] = _case(tokens[i], ARTICLE_AFTER[low][tokens[nxt].lower()])
             out[i + 1] = out[nxt] = ""
             skip.add(nxt)
+            continue
+        if low == "muito":
+            out[i] = _case(tokens[i], _muito(tokens, words, n))
+            continue
+        # não before a pause is nó, and nun only before a verb: el dixo que nó.
+        if low == "não" and nxt != i + 2:
+            out[i] = _case(tokens[i], "nó")
             continue
         if low == "a" and _preposition(tokens, i, nxt):
             continue
@@ -305,6 +366,27 @@ def translate(text: str) -> str:
             continue
         out[i] = _case(tokens[i], word(low))
     return _elide("".join(out))
+
+
+# muito is mui before an adjective or an adverb (mui grande, mui debrebe) and muito before a noun, a preposition or a
+# pause, as a native speaker reports: Fai muitos dies. The nouns are those that follow muito in the gold files.
+MUITO_BEFORE = {"de", "do", "da", "dos", "das", "a", "à", "ao", "aos", "às", "o", "os", "as", "um", "uma", "e", "ou",
+                "em", "no", "na", "nos", "nas", "por", "pelo", "pela", "para", "com", "que", "se", "sobre", "mas",
+                "porque", "quando", "como"}
+MUITO_NOUN = {"tempo", "sucesso", "dinheiro", "cuidado", "trabalho", "interesse", "humor", "poder", "frio", "calor",
+              "medo", "sono", "gosto", "jeito", "esforço", "respeito", "amor", "prazer", "barulho", "vento", "sol"}
+# After these verbs muito is a quantity: há muito tempo, tenho muito trabalho.
+MUITO_VERB = {"faz", "fazia", "fez", "há", "havia", "houve", "tem", "tenho", "tinha", "tive", "teve", "temos", "têm"}
+
+
+def _muito(tokens, words, n):
+    i, nxt = words[n], words[n + 1] if n + 1 < len(words) else None
+    if nxt != i + 2:
+        return "muito"
+    w = tokens[nxt].lower()
+    if w in MUITO_BEFORE or w in MUITO_NOUN or (n and tokens[words[n - 1]].lower() in MUITO_VERB):
+        return "muito"
+    return "mui"
 
 
 def _starts_sentence(tokens, i):

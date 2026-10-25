@@ -110,7 +110,7 @@ def test_neologisms_keep_l(pt, mwl):
 
 def test_personal_names_keep_v():
     # Convenção p. 17: proper names keep an official V (Virgílio). Place names in the word list keep their form.
-    assert translate("Falei com o Virgílio e a Vera.") == "Falei cul Virgílio i la Vera."
+    assert translate("Falei com o Virgílio e a Vera.") == "Falei cun Virgílio i Vera."
     assert translate("Vamos a Vimioso.").startswith("Bamos")
 
 
@@ -129,3 +129,53 @@ def test_a_convencao_gloss_does_not_take_the_other_sense():
 def test_a_noun_in_ar_does_not_make_every_short_word_lh():
     # lhar (lar) is a noun; read as a verb, its stem lh- turned la, le and las into lha, lhe and lhas.
     assert translate("Ouviu a ópera La Traviata e Les Misérables.") == "Oubiu la ópera La Traviata i Les Misérables."
+
+
+def test_native_speaker_corrections():
+    # A native speaker's corrections win over every other source.
+    assert [word(w) for w in ("enquanto", "bolo", "voo", "pó")] == ["mentes", "bolho", "bolo", "polbo"]
+    assert [word(w) for w in ("brincar", "brincavam", "brinquei", "brincou", "quebrar", "quebrou")] == [
+        "gaiar", "gaiában", "gaiei", "gaiou", "scachar", "scachou"]
+    assert translate("As crianças brincavam na rua.").split()[2] == "gaiában"
+
+
+def test_a_personal_name_takes_no_article():
+    # A native speaker: names take no article in Mirandese. Places keep theirs.
+    assert translate("Falei com o Virgílio.") == "Falei cun Virgílio."
+    assert translate("O João foi à casa da Maria.").startswith("João fui")
+    assert translate("O João foi à casa da Maria.") == "João fui a la casa de Marie."
+    assert "de la Ouropa" in translate("Ele gosta da Europa.")
+
+
+def test_mui_goes_before_an_adjective_or_adverb_and_muito_elsewhere():
+    # A native speaker: mui before adjectives and adverbs (mui grande, el bai mui debrebe), muito for the rest,
+    # mainly nouns (Fai muitos dies).
+    assert translate("É muito grande.") == "Ye mui grande."
+    assert translate("Gosto muito de ti.").split()[1] == "muito"
+    assert translate("Ele trabalha muito.") == "El trabalha muito."
+    assert translate("Há muito tempo que não chove.").split()[1] == "muito"
+    assert translate("Faz muito frio.").split()[1] == "muito"
+    assert translate("Tive muito sucesso.").split()[1] == "muito"
+    assert translate("É muito mais fácil.").split()[1] == "mui"
+
+
+def test_nao_without_a_verb_is_no():
+    # A native speaker: nó against nun, as mui against muito. The corpus writes nó before a pause: que nó.
+    assert translate("Ele disse que não.") == "El dixo que nó."
+    assert translate("Não, obrigado.").split()[0] == "Nó,"
+    assert translate("Não sei.") == "Nun sei."
+
+
+def test_ali_is_eilhi():
+    # Convenção p. 29-30 allows alhi, eilhi and eili; the corpus writes eilhi 171 times and alhi never.
+    assert translate("Ele mora ali.") == "El mora eilhi."
+
+
+def test_a_given_name_follows_the_corpus_spelling():
+    # The corpus adapts Constantino (Custantino 79 times) and keeps João (387 times against Joon once).
+    assert translate("Falei com o João e o Constantino.") == "Falei cun João i Custantino."
+
+
+def test_a_before_a_masculine_name_is_the_preposition():
+    assert translate("Escreveu a Marco Aurélio.") == "Screbiu a Marco Aurélio."
+    assert translate("Vi a Ana.") == "Bi Ana."

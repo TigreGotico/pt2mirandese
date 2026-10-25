@@ -4,6 +4,7 @@ A hypothesis counts as exact when it equals the reference or any alternative aft
 normalisation. chrF2 is corpus chrF from sacrebleu against the main reference.
 
     python scripts/evaluate.py gold/wikimedia_dev.tsv [--errors N]
+    python scripts/evaluate.py gold/wikimedia_dev.tsv --hyps bench/madlad    # another system's output
 """
 import argparse
 import csv
@@ -33,14 +34,21 @@ def main():
     ap.add_argument("gold", nargs="+")
     ap.add_argument("--errors", type=int, default=0)
     ap.add_argument("--no-lexicon", action="store_true", help="score the rules alone, without the word lists in data/")
+    ap.add_argument("--hyps", help="score the hypotheses in DIR/<gold file> (id, hyp) instead of the translator")
     args = ap.parse_args()
+    name = Path(args.hyps).name if args.hyps else "pt2mirandese"
     if args.no_lexicon:
         LEXICON.clear()
         CONVENCAO.clear()
-    print("| Set | Rows | Copy exact | Copy chrF2 | pt2mirandese exact | pt2mirandese chrF2 |\n| --- | ---: | ---: | ---: | ---: | ---: |")
+    print(f"| Set | Rows | Copy exact | Copy chrF2 | {name} exact | {name} chrF2 |\n| --- | ---: | ---: | ---: | ---: | ---: |")
     for path in args.gold:
         rows = list(csv.DictReader(Path(path).read_text(encoding="utf-8").splitlines(), delimiter="\t"))
-        hyps = [translate(r["pt"]) for r in rows]
+        if args.hyps:
+            saved = {h["id"]: h["hyp"] for h in csv.DictReader(
+                (Path(args.hyps) / Path(path).name).read_text(encoding="utf-8").splitlines(), delimiter="\t")}
+            hyps = [saved[r["id"]] for r in rows]
+        else:
+            hyps = [translate(r["pt"]) for r in rows]
         (ce, cc), (re_, rc) = score(rows, [r["pt"] for r in rows]), score(rows, hyps)
         print(f"| {Path(path).name} | {len(rows)} | {ce:.3f} | {cc:.1f} | {re_:.3f} | {rc:.1f} |")
         shown = 0
