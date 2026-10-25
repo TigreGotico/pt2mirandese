@@ -174,24 +174,51 @@ LH_VERB = re.compile("(?:" + "|".join(sorted(w[:-2] for w in LH if w.endswith("a
 with (resources.files(__package__) / "data" / "native.tsv").open(encoding="utf-8") as _f:
     _native = list(csv.DictReader(_f, delimiter="\t"))
 NATIVE = {r["pt"]: r["mwl"] for r in _native if r["kind"] == "word"}
-NATIVE_VERB = {r["pt"][:-2]: r["mwl"][:-2] for r in _native if r["kind"] == "verb"}
 PT_AR = re.compile(r"ar|o|as|a|amos|ais|am|aste|ou|ámos|astes|aram|ava|avas|ávamos|áveis|avam|ando|ado|ada|ados"
                    r"|adas|aria|arias|aríamos|aríeis|ariam|arei|arás|ará|aremos|areis|arão|ara|aras|áramos|áreis"
                    r"|asse|asses|ássemos|ásseis|assem|armos|ardes|arem")
 # Before e the stem changes its spelling: brinc- > brinqu- (brinquei), carreg- > carregu-, começ- > comec-.
 PT_AR_FRONT = re.compile(r"ei|e|es|emos|eis|em")
+PT_ER = re.compile(r"er|es|e|emos|eis|em|ia|ias|íamos|íeis|iam|i|este|eu|estes|eram|era|eras|êramos|êreis|erei|erás"
+                   r"|erá|eremos|ereis|erão|esse|esses|êssemos|êsseis|essem|eres|ermos|erdes|erem|eria|erias|eríamos"
+                   r"|eríeis|eriam|endo|ido|ida|idos|idas")
+PT_IR = re.compile(r"ir|es|e|imos|is|em|ia|ias|íamos|íeis|iam|i|iste|iu|istes|iram|ira|iras|íramos|íreis|irei|irás"
+                   r"|irá|iremos|ireis|irão|isse|isses|íssemos|ísseis|issem|ires|irmos|irdes|irem|iria|irias|iríamos"
+                   r"|iríeis|iriam|indo|ido|ida|idos|idas")
+# Before a or o the stem of an -er or -ir verb changes its spelling: conhec- > conheç- (conheço), proteg- > protej-.
+PT_BACK = re.compile(r"o|a|as|amos|ais|am")
 
 
 def _front(stem: str) -> str:
     return stem[:-1] + {"c": "qu", "g": "gu", "ç": "c"}.get(stem[-1], stem[-1])
 
 
-def _native_verb(w: str) -> str:
-    for pt, mwl in NATIVE_VERB.items():
-        for a, b, endings in ((pt, mwl, PT_AR), (_front(pt), _front(mwl), PT_AR_FRONT)):
-            if w.startswith(a) and endings.fullmatch(w[len(a):]):
-                return rules(b + w[len(a):])
+def _back(stem: str) -> str:
+    return stem[:-1] + {"c": "ç", "g": "j"}.get(stem[-1], stem[-1])
+
+
+CONJUGATIONS = {"ar": ((PT_AR, str), (PT_AR_FRONT, _front)), "er": ((PT_ER, str), (PT_BACK, _back)),
+                "ir": ((PT_IR, str), (PT_BACK, _back))}
+
+
+def _verb_table(pairs) -> dict:
+    """Map each spelling of a Portuguese verb stem to its Mirandese stem and the endings that follow it."""
+    table = {}
+    for pt, mwl in pairs:
+        for endings, spell in CONJUGATIONS[pt[-2:]]:
+            table.setdefault(spell(pt[:-2]), []).append((spell(mwl[:-2]), endings))
+    return table
+
+
+def _conjugate(w: str, table: dict) -> str:
+    for k in range(len(w) - 1, 1, -1):
+        for mwl, endings in table.get(w[:k], ()):
+            if endings.fullmatch(w[k:]):
+                return rules(mwl + w[k:])
     return ""
+
+
+NATIVE_VERB = _verb_table((r["pt"], r["mwl"]) for r in _native if r["kind"] == "verb")
 
 
 # Given names, which take no article in Mirandese: falei cun Virgílio (scripts/build_names.py).
@@ -268,18 +295,26 @@ def rules(w: str, name: bool = False) -> str:
     return re.sub(r"n(?=[bp])", "m", w if name else w.replace("v", "b"))
 
 
+# A verb whose infinitive the word lists spell with another stem gives that stem to every form: ficar > quedar,
+# ficaram > quedórun. data/verbs.tsv keeps the verbs whose forms the corpus writes that way (scripts/build_verbs.py).
+with (resources.files(__package__) / "data" / "verbs.tsv").open(encoding="utf-8") as _f:
+    LEXICON_VERB = _verb_table((r["pt"], r["mwl"]) for r in csv.DictReader(_f, delimiter="\t"))
+
+
 def word(w: str) -> str:
     """Translate one lowercase word with no context."""
     if w in NATIVE:
         return NATIVE[w]
     if w in CLOSED:
         return CLOSED[w]
-    if verb := _native_verb(w):
+    if verb := _conjugate(w, NATIVE_VERB):
         return verb
     if w in CONVENCAO:
         return CONVENCAO[w]
     if w in LEXICON:
         return _lh(LEXICON[w])
+    if verb := _conjugate(w, LEXICON_VERB):
+        return verb
     if "-" in w:
         head, *rest = w.split("-")
         head = rules(head) if rest[0] in INFINITIVE_CLITIC and head not in LEXICON else word(head)

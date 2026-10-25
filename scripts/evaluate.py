@@ -12,7 +12,7 @@ from pathlib import Path
 
 from sacrebleu.metrics import CHRF
 
-from pt2mirandese import CONVENCAO, LEXICON, translate
+from pt2mirandese import CONVENCAO, LEXICON, LEXICON_VERB, translate
 
 
 def norm(s):
@@ -40,6 +40,7 @@ def main():
     if args.no_lexicon:
         LEXICON.clear()
         CONVENCAO.clear()
+        LEXICON_VERB.clear()
     print(f"| Set | Rows | Copy exact | Copy chrF2 | {name} exact | {name} chrF2 |\n| --- | ---: | ---: | ---: | ---: | ---: |")
     for path in args.gold:
         rows = list(csv.DictReader(Path(path).read_text(encoding="utf-8").splitlines(), delimiter="\t"))

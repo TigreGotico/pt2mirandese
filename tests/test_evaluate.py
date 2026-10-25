@@ -26,3 +26,12 @@ def test_the_references_score_full_marks(tmp_path):
 def test_a_copy_of_the_portuguese_scores_as_the_copy_columns(tmp_path):
     cells = run(tmp_path, "pt")
     assert cells[4:] == cells[2:4]
+
+
+def test_no_lexicon_drops_the_verb_list_too(tmp_path):
+    # The verb list comes from the word lists: ficaram > quedórun. The rules alone write ficórun.
+    gold = tmp_path / "verbs.tsv"
+    gold.write_text("id\tpt\tmwl\talt\nv1\tEles ficaram.\tEilhes ficórun.\t\n", encoding="utf-8")
+    out = subprocess.run([sys.executable, ROOT / "scripts" / "evaluate.py", gold, "--no-lexicon"],
+                         capture_output=True, text=True, check=True).stdout
+    assert out.splitlines()[-1].strip("| ").split(" | ")[4] == "1.000"

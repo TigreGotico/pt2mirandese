@@ -36,8 +36,10 @@ def inputs(paths):
 
 
 def forget():
-    # Each worker process imports pt2mirandese afresh, with the list on disk loaded.
+    # Each worker process imports pt2mirandese afresh, with the lists on disk loaded. The verb list comes from the
+    # word list, so it goes too, or a verb it covers is never learned and drops out of the next build.
     pt2mirandese.LEXICON.clear()
+    pt2mirandese.LEXICON_VERB.clear()
 
 
 def pair_words(pair):

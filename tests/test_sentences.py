@@ -179,3 +179,11 @@ def test_a_given_name_follows_the_corpus_spelling():
 def test_a_before_a_masculine_name_is_the_preposition():
     assert translate("Escreveu a Marco Aurélio.") == "Screbiu a Marco Aurélio."
     assert translate("Vi a Ana.") == "Bi Ana."
+
+
+def test_a_verb_with_another_stem_keeps_it_in_every_form():
+    # The word list gives ficar > quedar and continuar > cuntinar; the corpus writes quedórun 119 times and ficórun
+    # never.
+    assert word("ficaram") == "quedórun"
+    assert word("continuaram") == "cuntinórun"
+    assert word("estabeleceram") == "stablecírun"
