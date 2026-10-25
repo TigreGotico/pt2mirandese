@@ -41,7 +41,7 @@ Wikipedia text is CC-BY-SA 4.0, so both files are CC-BY-SA 4.0.
 
 ## tatoeba.tsv
 
-41 everyday sentences from Tatoeba with a link between Mirandese and Portuguese. Some Portuguese sides are Brazilian (*Papai Noel*, *Me chame*). Tatoeba is CC-BY 2.0 FR.
+35 everyday sentences from Tatoeba with a link between Mirandese and Portuguese. When Tatoeba links one Portuguese sentence to several Mirandese ones (*Concordo*: *Stou d'acuordo*, *Cuncordo*), the first is the reference and the others are in `alt`. Six Portuguese sides on Tatoeba are Brazilian (*Papai Noel*, *Me chame*). Their `pt` is a pt-PT version written by hand, and `note` keeps the Tatoeba text. Tatoeba is CC-BY 2.0 FR.
 
 ## convencao.tsv
 

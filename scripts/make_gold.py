@@ -13,6 +13,11 @@ the length ratio is outside 0.67 to 1.5, which marks a sentence cut on one side 
 Portuguese sentence is kept. The first hex digit of the sha256 of the
 Portuguese side picks the split, so the split does not depend on the order of the release: 0, 1 or 2 is test, 3 is
 dev, and the rest is train. The dev split chooses between rules; data/lexicon.tsv learns from all three.
+
+Tatoeba links one Portuguese sentence to several Mirandese ones (Concordo: Stou d'acuordo, Cuncordo). Those become
+one row: the first Mirandese is the reference and the others go to alt. Some Portuguese sides are Brazilian. The
+translator reads European Portuguese, so PT_PT gives those rows a pt-PT source written by hand, and the note keeps
+the Tatoeba text.
 """
 import csv
 import hashlib
@@ -22,6 +27,16 @@ import unicodedata
 from pathlib import Path
 
 FIELDS = ["id", "pt", "mwl", "alt", "source", "kind", "class", "note"]
+# Brazilian Portuguese on Tatoeba, by Portuguese text, with the pt-PT that the Mirandese translates.
+PT_PT = {
+    "Oi.": "Olá.",
+    "Tchau!": "Adeus!",
+    "O Papai Noel é chinês.": "O Pai Natal é chinês.",
+    "Me chame se você encontrar o Tom.": "Chama-me se encontrares o Tom.",
+    "Eles estão indo para casa.": "Eles estão a ir para casa.",
+    "Sua pele é macia.": "A tua pele é macia.",
+    "Minha pele é seca.": "A minha pele é seca.",
+}
 
 
 def clean(s):
@@ -65,15 +80,24 @@ def main():
     print(f"wikimedia in={len(pt)}", *(f"{k}={len(v)}" for k, v in splits.items()), f"dropped={dropped}")
 
     rows = list(csv.DictReader(tatoeba.read_text(encoding="utf-8").splitlines(), delimiter="\t"))
-    out, seen = [], set()
+    out, by_pt, ids = [], {}, set()
     for r in rows:
-        if r["mwl"] in seen:
+        p, m = clean(r["por"]), clean(r["mwl"]).replace("’", "'")
+        q = PT_PT.get(p, p)
+        if q in by_pt:
+            row = by_pt[q]
+            alts = row["alt"].split("|") if row["alt"] else []
+            if m != row["mwl"] and m not in alts:
+                row["alt"] = "|".join(alts + [m])
             continue
-        seen.add(r["mwl"])
-        out.append({"id": f"t{r['mwl_id']}", "pt": clean(r["por"]), "mwl": clean(r["mwl"]), "alt": "",
-                    "source": r["source_url"], "kind": "sentence", "class": "", "note": ""})
+        # Tatoeba links some Mirandese sentences to two Portuguese ones; the second row takes the Portuguese id too.
+        tid = f"t{r['mwl_id']}" if f"t{r['mwl_id']}" not in ids else f"t{r['mwl_id']}-{r['por_id']}"
+        ids.add(tid)
+        by_pt[q] = {"id": tid, "pt": q, "mwl": m, "alt": "", "source": r["source_url"],
+                    "kind": "sentence", "class": "", "note": f"Tatoeba pt is Brazilian: {p}" if p in PT_PT else ""}
+        out.append(by_pt[q])
     write("gold/tatoeba.tsv", out)
-    print(f"tatoeba in={len(rows)} out={len(out)}")
+    print(f"tatoeba in={len(rows)} out={len(out)} merged={len(rows) - len(out)} pt-PT={sum(bool(r['note']) for r in out)}")
 
 
 if __name__ == "__main__":
