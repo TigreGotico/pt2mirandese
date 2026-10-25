@@ -31,7 +31,7 @@ The translator works in three layers. A word goes to the first layer that has it
 Before the layers, `data/native.tsv` holds the corrections of a native speaker. They win over every other source. Some are false friends: Portuguese *brincar* is Mirandese *gaiar*, because Mirandese *brincar* means *saltar*. Portuguese *bolo* is *bolho*, because Mirandese *bolo* is *voo*. A verb row covers every form of the verb (*brincavam* > *gaiában*, *quebrou* > *scachou*).
 
 1. **Closed classes** come from the tables of the Convenção: articles (*l*, *la*, *ls*, *las*), contractions (*de l*, *al*, *cul*, *pa l*), pronouns, possessives, demonstratives, prepositions, adverbs and the present tense of the irregular verbs. Each group names its PDF page in the code.
-2. **Word lists.** `data/convencao.tsv` comes first: it holds 1,699 words that the Convenção prints, such as *scola*, *dixo* and *irie*, and its form wins over the corpus. Claude Opus 5.5 glossed each Mirandese word on each page into Portuguese, and a second pass checked each gloss against its page. A gloss stays only when the word is Mirandese, the gloss is right, and the Portuguese word has no other common sense that Mirandese writes differently: *verão* is summer as well as *beran*, they will see. `scripts/build_convencao.py` builds the list. `data/lexicon.tsv` holds 10,191 words whose Mirandese form the rules do not give, such as *tierra*, *muorte* and *anho*. `scripts/learn_lexicon.py` learns them from every parallel pair in `gold/`: 113,253 rows, of which 109,672 are different pairs. Where the writers disagree (*lhéngua* and *léngua*), the most frequent form wins. `data/lhenguabase.tsv` adds 296 words from the [Lhenguabase](https://lhenguabase.wikibase.cloud) that the parallel data does not check, such as *gabilanes* and *majaricones*. The Lhenguabase glosses a lemma, so Claude Opus 5.5 gave each Mirandese form the Portuguese word in the same gender and number. `data/wiktionary.tsv` adds 176 more from the Portuguese Wiktionary.
+2. **Word lists.** `data/convencao.tsv` comes first: it holds 1,699 words that the Convenção prints, such as *scola*, *dixo* and *irie*, and its form wins over the corpus. Claude Opus 5.5 glossed each Mirandese word on each page into Portuguese, and a second pass checked each gloss against its page. A gloss stays only when the word is Mirandese, the gloss is right, and the Portuguese word has no other common sense that Mirandese writes differently: *verão* is summer as well as *beran*, they will see. `scripts/build_convencao.py` builds the list. `data/lexicon.tsv` holds 10,191 words whose Mirandese form the rules do not give, such as *tierra*, *muorte* and *anho*. `scripts/learn_lexicon.py` learns them from every parallel pair in `gold/`: 113,253 rows, of which 109,672 are different pairs. Where the writers disagree (*lhéngua* and *léngua*), the most frequent form wins. `data/lhenguabase.tsv` adds 296 words from the [Lhenguabase](https://lhenguabase.wikibase.cloud) that the parallel data does not check, such as *gabilanes* and *majaricones*. The Lhenguabase glosses a lemma, so Claude Opus 5.5 gave each Mirandese form the Portuguese word in the same gender and number. `data/wiktionary.tsv` adds 176 more from the Portuguese Wiktionary. A verb that a word list spells with another stem gives that stem to its other forms: *ficar* > *quedar*, so *ficaram* > *quedórun*. `data/verbs.tsv` keeps only the verbs whose forms the parallel data writes that way, because a vowel that changes only under stress does not carry (*buoltar*, but *boltou*). `scripts/build_verbs.py` builds it after each relearn.
 3. **Spelling rules** convert the rest. Among them: *v* > *b*, *-ção* > *-çon*, final *-z* > *-ç*, initial *es-* > *s-*, *en-*/*in-* > *an-*, pretonic *con-* > *cun-*, stressed final *-ia* > *-ie*, *-mento* > *-miento*, and the verb endings of the Convenção tables (*cantórun*, *cantában*, *comie*, *cantarie*).
 
 Some rules need the words around a word. *muito* is *mui* before an adjective or an adverb (*mui grande*) and *muito* before a noun, a preposition or a pause (*gusto muito de ti*, *hai muito tiempo*), as a native speaker reports. *não* is *nun* before a verb and *nó* before a pause, Convenção p. 30: *el dixo que nó*. *a* is the article *la* except before an infinitive, a numeral or a pronoun. *la*, *l*, *de* and *que* elide before a vowel (*l'alma*, *d'outro*, *qu'el*). *nos* before the verb is the pronoun *mos*. A personal name takes no article: *falei com o Virgílio* > *falei cun Virgílio*, *a casa da Maria* > *la casa de Marie*. `data/names.txt` lists the given names from Wikidata. A name that the Portuguese side of the gold files writes after an article more often than after a bare preposition is a place, which keeps its article (*de la Ouropa*), and is left out. `scripts/build_names.py` builds the list. A given name in the list also keeps its spelling. Roman numerals, acronyms (*TV*), one-letter abbreviations (*a.C.*), web and e-mail addresses and template slots stay as they are.
@@ -42,10 +42,10 @@ The spelling follows the 2000 Adenda to the Convenção, which writes *ie*, *uo*
 
 | Set | Rows | Copy the Portuguese: chrF2 | Rules alone: exact | Rules alone: chrF2 | pt2mirandese: exact | pt2mirandese: chrF2 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `wikimedia_test.tsv` | 1,489 | 62.4 | 0.075 | 87.2 | 0.372 | 94.8 |
-| `wikimedia_dev.tsv` | 493 | 62.0 | 0.093 | 86.6 | 0.375 | 94.3 |
-| `wikipedia_mined.tsv` | 54,360 | 58.0 | 0.035 | 82.6 | 0.247 | 91.1 |
-| `tatoeba.tsv` | 35 | 35.1 | 0.229 | 49.9 | 0.457 | 63.3 |
+| `wikimedia_test.tsv` | 1,489 | 62.4 | 0.075 | 87.2 | 0.377 | 94.8 |
+| `wikimedia_dev.tsv` | 493 | 62.0 | 0.093 | 86.6 | 0.377 | 94.3 |
+| `wikipedia_mined.tsv` | 54,360 | 58.0 | 0.035 | 82.6 | 0.250 | 91.2 |
+| `tatoeba.tsv` | 35 | 35.1 | 0.229 | 49.9 | 0.486 | 63.5 |
 | `convencao.tsv` | 76 | 36.5 | 0.711 | 74.1 | 0.987 | 96.1 |
 
 "Exact" accepts the reference or an alternative after lowercasing. chrF2 is corpus chrF from sacrebleu. "Rules alone" switches all the word lists off.
@@ -60,7 +60,7 @@ uv run --with sacrebleu --with-editable . python scripts/evaluate.py gold/wikime
 
 **One Portuguese side is machine translation.** `gold/wikipedia_backtranslated.tsv` pairs 51,045 Mirandese Wikipedia sentences with Portuguese from Claude Haiku 5.5. Its Mirandese side gives the word list real forms, but its Portuguese side is not a reference, so the table does not score it.
 
-**Encyclopaedic text is most of the data.** Tatoeba holds everyday sentences by other writers, and there the translator scores 63.3: it misses everyday words (*teç* for *pele*, *Adius* for *Tchau*) and idioms.
+**Encyclopaedic text is most of the data.** Tatoeba holds everyday sentences by other writers, and there the translator scores 63.5: it misses everyday words (*teç* for *pele*, *Adius* for *Tchau*) and idioms.
 
 **The corpus does not always follow the Convenção.** Where the two differ, the translator follows the Convenção, and loses exact matches against references that follow the corpus. On `wikimedia_dev.tsv` the printed words, *lh-* and proper names cost 41 of 493 rows together: 227 rows pass with the corpus forms, 186 with the Convenção forms.
 
@@ -77,7 +77,7 @@ The one other Portuguese to Mirandese system is MADLAD-400 3B (Google, Apache-2.
 | --- | ---: | ---: | ---: | ---: |
 | `wikimedia_test.tsv` | 0.144 | 89.0 | 87.2 | 94.8 |
 | `wikimedia_dev.tsv` | 0.114 | 88.4 | 86.6 | 94.3 |
-| `tatoeba.tsv` | 0.029 | 48.0 | 49.9 | 63.3 |
+| `tatoeba.tsv` | 0.029 | 48.0 | 49.9 | 63.5 |
 | `convencao.tsv` | 0.276 | 55.9 | 74.1 | 96.1 |
 
 ```bash

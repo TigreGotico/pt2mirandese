@@ -1,6 +1,7 @@
 """The word lists are up to date with the rules and the parallel data they come from."""
 import csv
 import hashlib
+import importlib
 import subprocess
 import sys
 from pathlib import Path
@@ -42,6 +43,17 @@ def test_the_learner_ignores_the_list_on_disk():
             f.write_bytes(content)
 
 
+def test_the_learner_forgets_the_verb_list_too():
+    # The verb list derives from the word list. A learner that keeps it never learns the verbs it covers, and the
+    # next build of the verb list loses them.
+    import pt2mirandese
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import learn_lexicon
+    learn_lexicon.forget()
+    assert not pt2mirandese.LEXICON and not pt2mirandese.LEXICON_VERB
+    importlib.reload(pt2mirandese)
+
+
 def test_wiktionary_entries_name_their_page():
     entries = load(DATA / "wiktionary.tsv")
     assert entries
@@ -52,3 +64,14 @@ def test_entries_are_single_lowercase_words():
     for name in ("lexicon.tsv", "wiktionary.tsv"):
         for e in load(DATA / name):
             assert e["pt"] == e["pt"].lower() and " " not in e["pt"] and " " not in e["mwl"] and e["mwl"], e
+
+
+def test_the_verb_list_is_current():
+    # scripts/build_verbs.py reads the word lists and the gold files; a relearn without a rebuild leaves it stale.
+    path = DATA / "verbs.tsv"
+    kept = path.read_bytes()
+    try:
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "build_verbs.py")], check=True, capture_output=True)
+        assert path.read_bytes() == kept, "rebuild with scripts/build_verbs.py"
+    finally:
+        path.write_bytes(kept)

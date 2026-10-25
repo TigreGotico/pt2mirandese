@@ -91,7 +91,7 @@ src.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.
     pyodide.FS.mkdir("pt2mirandese");
     pyodide.FS.mkdir("pt2mirandese/data");
     const files = ["__init__.py", "version.py", "data/common.txt", "data/convencao.tsv", "data/lexicon.tsv",
-                   "data/lh.tsv", "data/lhenguabase.tsv", "data/names.txt", "data/native.tsv", "data/wiktionary.tsv"];
+                   "data/lh.tsv", "data/lhenguabase.tsv", "data/names.txt", "data/native.tsv", "data/verbs.tsv", "data/wiktionary.tsv"];
     for (const name of files) {
       const response = await fetch(`pt2mirandese/${name}`);
       if (!response.ok) throw new Error(`${name}: ${response.status}`);
