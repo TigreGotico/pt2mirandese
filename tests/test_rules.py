@@ -50,3 +50,13 @@ def test_a_stressed_first_syllable_keeps_its_vowel():
     # obra and ordem stress the first syllable, so the pretonic o > ou rule does not apply.
     assert rules("obra") == "obra"
     assert rules("ordem") == "orden"
+
+
+def test_the_imperfect_3rd_plural_takes_the_accent():
+    # Convenção p. 31 prints cantában; the corpus writes -ában 3,014 times against 53 for -aban.
+    assert [rules(w) for w in ("falavam", "andavam", "gaiavam")] == ["falában", "andában", "gaiában"]
+
+
+def test_a_present_tense_in_avam_takes_no_accent():
+    # gravar, travar: the present 3rd plural of a one-syllable stem in -av- (grában would be the imperfect of grar).
+    assert [rules(w) for w in ("gravam", "travam", "cravam")] == ["graban", "traban", "craban"]
