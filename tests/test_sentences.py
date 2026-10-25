@@ -2,11 +2,11 @@
 the object pronoun nos. Each expected form is printed in the Convenção (PDF page) or counted in the corpus."""
 import pytest
 
-from pt2mirandese import translate
+from pt2mirandese import translate, word
 
 
 @pytest.mark.parametrize("pt, mwl", [
-    ("o livro", "l libro"),                    # article l, p. 23
+    ("o livro", "l lhibro"),                    # article l, p. 23
     ("a alma", "l'alma"),                      # la > l' before a vowel, p. 21
     ("ao rei", "al rei"),                      # a + o > al, p. 24
     ("à porta", "a la puorta"),                # a + a stays apart, p. 24
@@ -78,11 +78,11 @@ def test_sentence_final_e_is_a_verb():
 
 def test_addresses_and_acronyms_stay():
     assert translate("a TV e exemplo.pt/vida") == "la TV i exemplo.pt/vida"
-    assert translate("escreva para eu@vida.pt") == "screba para eu@vida.pt"
+    assert translate("escreva para eu@vida.pt") == "scriba para eu@vida.pt"
 
 
 def test_all_caps_text_stays_in_capitals():
-    assert translate("O LIVRO DO REI") == "L LIBRO DE L REI"
+    assert translate("O LIVRO DO REI") == "L LHIBRO DE L REI"
 
 
 def test_case_and_template_slots_are_kept():
@@ -90,4 +90,37 @@ def test_case_and_template_slots_are_kept():
 
 
 def test_each_line_is_translated_on_its_own():
-    assert translate("o livro\na casa") == "l libro\nla casa"
+    assert translate("o livro\na casa") == "l lhibro\nla casa"
+
+
+@pytest.mark.parametrize("pt, mwl", [
+    ("lua", "lhuna"), ("livro", "lhibro"), ("livros", "lhibros"), ("lado", "lhado"), ("lugar", "lhugar"),
+    ("leite", "lheite"), ("levar", "lhebar"), ("levou", "lhebou"), ("lembrar", "lhembrar"),
+])
+def test_traditional_words_take_lh(pt, mwl):
+    # Convenção p. 15: initial l before a vowel is lh- in the traditional vocabulary (lhuna, lhibro, lhado).
+    assert word(pt) == mwl
+
+
+@pytest.mark.parametrize("pt, mwl", [("lógica", "lógica"), ("liberalismo", "liberalismo"), ("laboratório", "laboratório")])
+def test_neologisms_keep_l(pt, mwl):
+    # Convenção p. 15: l- stays in neologisms and loanwords.
+    assert word(pt) == mwl
+
+
+def test_personal_names_keep_v():
+    # Convenção p. 17: proper names keep an official V (Virgílio). Place names in the word list keep their form.
+    assert translate("Falei com o Virgílio e a Vera.") == "Falei cul Virgílio i la Vera."
+    assert translate("Vamos a Vimioso.").startswith("Bamos")
+
+
+def test_convencao_words_win_over_the_corpus():
+    # A word the Convenção prints is the preferred form; the corpus writes scuola 593 times, dixe, eirie, canhona.
+    assert [word(w) for w in ("escola", "disse", "iria", "depressa", "ovelha", "diferença")] == [
+        "scola", "dixo", "irie", "depriessa", "oubeilha", "defrência"]
+
+
+def test_a_convencao_gloss_does_not_take_the_other_sense():
+    # The Convenção cites beran, they will see, and sala, that he leave; verão and saia are mostly summer and skirt.
+    assert word("verão") != "beran"
+    assert word("saia") != "sala"

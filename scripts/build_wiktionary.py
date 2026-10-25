@@ -4,10 +4,10 @@ The input is the pt-mwl word list built from the kaikki.org extract of pt.wiktio
 source_url). Only one-word pairs of open classes are kept; the closed classes come from the Convenção. When an
 entry gives several Mirandese words for one Portuguese word, the one closest to the rules' output is kept, because
 a cognate is the safer choice in running text. A pair is left out when the rules already give it, and when the
-word occurs twice or more in the train split: there scripts/learn_lexicon.py has already checked the rules against
-the translators' choice.
+word occurs twice or more in the parallel data: there scripts/learn_lexicon.py has already checked the rules
+against the translators' choice.
 
-    python scripts/build_wiktionary.py wiktionary_pt_mwl.tsv gold/wikimedia_train.tsv
+    python scripts/build_wiktionary.py wiktionary_pt_mwl.tsv gold/*.tsv
 """
 import csv
 import sys
@@ -24,8 +24,9 @@ OPEN = {"noun", "adj", "verb", "adv", "num"}
 
 def main():
     rows = list(csv.DictReader(Path(sys.argv[1]).read_text(encoding="utf-8").splitlines(), delimiter="\t"))
-    seen = Counter(w for r in csv.DictReader(Path(sys.argv[2]).read_text(encoding="utf-8").splitlines(),
-                                            delimiter="\t") for w in TOKEN.findall(r["pt"].lower()))
+    seen = Counter(w for path in sys.argv[2:] if not path.endswith("cx_mint_era.tsv")
+                   for r in csv.DictReader(Path(path).read_text(encoding="utf-8").splitlines(), delimiter="\t")
+                   for w in TOKEN.findall(r["pt"].lower()))
     pt2mirandese.LEXICON.clear()
     candidates = defaultdict(list)
     for r in rows:

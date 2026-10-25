@@ -6,8 +6,8 @@ comment that names "corpus" marks a form taken from the Mirandese side of the tr
 pairs, the Wikipedia articles that editors translated from Portuguese, with its count there.
 
 Words the rules cannot derive from the Portuguese spelling, such as the ie and uo diphthongs (terra > tierra) or
-the kept Latin -n- (lua > luna), come from data/lexicon.tsv. scripts/learn_lexicon.py writes that file from the
-train split, and only for words where the rules give a different form.
+the kept Latin -n- (lua > lhuna), come from data/lexicon.tsv. scripts/learn_lexicon.py writes that file from every
+parallel pair in gold/, and only for words where the rules give a different form.
 
     echo "O livro do meu pai está na mesa." | pt2mirandese
 """
@@ -153,9 +153,32 @@ def _load(name):
 
 # The corpus list wins over Wiktionary: it records the form the translators of running text chose.
 LEXICON = _load("wiktionary.tsv") | _load("lexicon.tsv")
+# A word the Convenção prints wins over both (scripts/build_convencao.py).
+CONVENCAO = _load("convencao.tsv")
+
+# Initial l before a vowel is lh- in the traditional vocabulary and l- in neologisms and loanwords, Convenção
+# p. 15. Writers mix the two in both kinds of word, so the words that take lh- come from curated sources
+# (data/lh.tsv, scripts/build_lh.py), with their plurals and, for -ar verbs, their conjugated forms.
+with (resources.files(__package__) / "data" / "lh.tsv").open(encoding="utf-8") as _f:
+    LH = {r["mwl"] for r in csv.DictReader(_f, delimiter="\t")}
+LH |= {w + s for w in LH for s in ("s", "es")}
+LH_VERB = re.compile("(?:" + "|".join(sorted(w[:-2] for w in LH if w.endswith("ar"))) + r")"
+                     r"(?:ar|o|as|a|amos|ais|an|ei|aste|ou|ámos|astes|órun|aba|abas|ábamos|ábades|ában|ando|ado|ada"
+                     r"|ados|adas|arie|aries|arien|arei|arás|ará|aremos|areis|aran|e|es|emos|en|ira|iras|ásse|ássen)")
 
 
-def rules(w: str) -> str:
+# Capitalised common words, which the proper-name rule leaves to the word list and the rules
+# (scripts/build_common.py).
+COMMON = set((resources.files(__package__) / "data" / "common.txt").read_text(encoding="utf-8").split())
+
+
+def _lh(w: str) -> str:
+    if re.match(r"l[aeiouáéíóú]", w) and ("lh" + w[1:] in LH or LH_VERB.fullmatch("lh" + w[1:])):
+        return "lh" + w[1:]
+    return w
+
+
+def rules(w: str, name: bool = False) -> str:
     """Spell one lowercase Portuguese word by the regular rules alone, with no word list."""
     first_unstressed = _stress(w) > 0
     if len(w) > 2:
@@ -203,23 +226,24 @@ def rules(w: str) -> str:
     w = re.sub(r"z$", "ç", w)
     # A final nasal is written n, Convenção p. 19.
     w = re.sub(r"(?<=[aeiou])m$", "n", w)
-    # Mirandese has no v, Convenção p. 17; m before b and p, Convenção p. 19: cumbite, cumpanheiro.
-    # The Convenção p. 17 lets proper names keep an official V (Virgílio); the corpus writes Birgílio, and place
-    # names take b (Bimioso), so names follow the rule too.
-    return re.sub(r"n(?=[bp])", "m", w.replace("v", "b"))
+    # Mirandese has no v, Convenção p. 17, but proper names keep an official V (Virgílio); m before b and p,
+    # Convenção p. 19: cumbite, cumpanheiro.
+    return re.sub(r"n(?=[bp])", "m", w if name else w.replace("v", "b"))
 
 
 def word(w: str) -> str:
     """Translate one lowercase word with no context."""
     if w in CLOSED:
         return CLOSED[w]
+    if w in CONVENCAO:
+        return CONVENCAO[w]
     if w in LEXICON:
-        return LEXICON[w]
+        return _lh(LEXICON[w])
     if "-" in w:
         head, *rest = w.split("-")
         head = rules(head) if rest[0] in INFINITIVE_CLITIC and head not in LEXICON else word(head)
         return "-".join([head] + [ENCLITIC.get(p, word(p)) for p in rest])
-    return rules(w)
+    return _lh(rules(w))
 
 
 def _case(src: str, out: str) -> str:
@@ -271,8 +295,19 @@ def translate(text: str) -> str:
         # An acronym in mixed-case text stays as it is: TV, IVA, EUA.
         if tokens[i].isupper() and len(low) > 1 and not text.isupper():
             continue
+        # A capitalised word inside a sentence that is not a common word is a proper name, which keeps its V and
+        # initial l-, Convenção p. 15 and 17. Place names with a Mirandese form are in the word list: Lisboua.
+        if (tokens[i][:1].isupper() and not tokens[i].isupper() and not _starts_sentence(tokens, i)
+                and low not in LEXICON and low not in CONVENCAO and low not in COMMON and "-" not in low):
+            out[i] = _case(tokens[i], rules(low, name=True))
+            continue
         out[i] = _case(tokens[i], word(low))
     return _elide("".join(out))
+
+
+def _starts_sentence(tokens, i):
+    before = [t for t in tokens[:i] if not t.isspace()]
+    return not before or before[-1] in {".", "!", "?", "…", ":", "«", '"', "“", "—"}
 
 
 def _preposition(tokens, i, nxt):
