@@ -151,8 +151,9 @@ def _load(name):
         return {r["pt"]: r["mwl"] for r in csv.DictReader(f, delimiter="\t")}
 
 
-# The corpus list wins over Wiktionary: it records the form the translators of running text chose.
-LEXICON = _load("wiktionary.tsv") | _load("lexicon.tsv")
+# The corpus list wins over the dictionaries: it records the form the translators of running text chose. The
+# Lhenguabase, which reviews entries imported from Wiktionary, wins over Wiktionary.
+LEXICON = _load("wiktionary.tsv") | _load("lhenguabase.tsv") | _load("lexicon.tsv")
 # A word the Convenção prints wins over both (scripts/build_convencao.py).
 CONVENCAO = _load("convencao.tsv")
 
@@ -162,7 +163,8 @@ CONVENCAO = _load("convencao.tsv")
 with (resources.files(__package__) / "data" / "lh.tsv").open(encoding="utf-8") as _f:
     LH = {r["mwl"] for r in csv.DictReader(_f, delimiter="\t")}
 LH |= {w + s for w in LH for s in ("s", "es")}
-LH_VERB = re.compile("(?:" + "|".join(sorted(w[:-2] for w in LH if w.endswith("ar"))) + r")"
+# A verb stem has a letter after lh-: lhar (lar) is a noun.
+LH_VERB = re.compile("(?:" + "|".join(sorted(w[:-2] for w in LH if w.endswith("ar") and len(w) > 4)) + r")"
                      r"(?:ar|o|as|a|amos|ais|an|ei|aste|ou|ámos|astes|órun|aba|abas|ábamos|ábades|ában|ando|ado|ada"
                      r"|ados|adas|arie|aries|arien|arei|arás|ará|aremos|areis|aran|e|es|emos|en|ira|iras|ásse|ássen)")
 

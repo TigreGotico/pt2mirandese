@@ -124,3 +124,8 @@ def test_a_convencao_gloss_does_not_take_the_other_sense():
     # The Convenção cites beran, they will see, and sala, that he leave; verão and saia are mostly summer and skirt.
     assert word("verão") != "beran"
     assert word("saia") != "sala"
+
+
+def test_a_noun_in_ar_does_not_make_every_short_word_lh():
+    # lhar (lar) is a noun; read as a verb, its stem lh- turned la, le and las into lha, lhe and lhas.
+    assert translate("Ouviu a ópera La Traviata e Les Misérables.") == "Oubiu la ópera La Traviata i Les Misérables."

@@ -31,3 +31,9 @@ def test_the_splits_share_no_sentence():
     for name in ("wikimedia_train.tsv", "wikimedia_dev.tsv", "wikimedia_test.tsv"):
         for r in load(name):
             assert seen.setdefault(r["pt"], name) == name, f"{r['id']} is in {seen[r['pt']]} and {name}"
+
+
+def test_every_gold_id_is_unique():
+    # cx_mint_era.tsv lists translations, not pairs, and has no id.
+    ids = [r["id"] for path in sorted(GOLD.glob("*.tsv")) if path.name != "cx_mint_era.tsv" for r in load(path.name)]
+    assert len(ids) == len(set(ids)), sorted(i for i in set(ids) if ids.count(i) > 1)
