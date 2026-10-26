@@ -60,3 +60,27 @@ def test_the_imperfect_3rd_plural_takes_the_accent():
 def test_a_present_tense_in_avam_takes_no_accent():
     # gravar, travar: the present 3rd plural of a one-syllable stem in -av- (grában would be the imperfect of grar).
     assert [rules(w) for w in ("gravam", "travam", "cravam")] == ["graban", "traban", "craban"]
+
+
+@pytest.mark.parametrize("pt, mwl", [
+    # Convenção p. 31-33 model verbs. The corpus agrees (-áren 361 against -aren 21, -isse 376 against 1) or has no
+    # form at all.
+    ("cantaste", "canteste"),
+    ("cantarem", "cantáren"),
+    ("cantáreis", "cantárades"),
+    ("cantásseis", "cantássedes"),
+    ("comerem", "comíren"),
+    ("comesse", "comisse"),
+    ("comesses", "comisses"),
+    ("comêssemos", "comíssemos"),
+    ("comêsseis", "comíssedes"),
+    ("comessem", "comíssen"),
+    ("comêramos", "comíramos"),
+    ("comêreis", "comírades"),
+    ("partirem", "partíren"),
+    ("partissem", "partíssen"),
+    ("partísseis", "partíssedes"),
+    ("partíreis", "partírades"),
+])
+def test_a_regular_verb_ending_follows_the_model_verbs(pt, mwl):
+    assert rules(pt) == mwl
