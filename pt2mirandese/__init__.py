@@ -121,6 +121,13 @@ ENDINGS = [
     ("ais", "ales"), ("éis", "eles"), ("óis", "oles"),                        # corpus: profissionales
     ("ês", "és"),                                                             # corpus: anglés, mirandés
     ("aram", "órun"), ("eram", "írun"), ("iram", "írun"),                     # Convenção p. 31-33
+    # Convenção p. 31-33 model verbs: canteste, cantáren, comisse, comíssen, partíren. The corpus agrees or has no
+    # form; where it disagrees (-ássen, -iemos, -emos for -ámos) the rules keep the Portuguese ending.
+    ("aste", "este"), ("áreis", "árades"), ("ásseis", "ássedes"),
+    ("arem", "áren"), ("erem", "íren"), ("irem", "íren"),
+    ("êssemos", "íssemos"), ("êsseis", "íssedes"), ("ísseis", "íssedes"),
+    ("essem", "íssen"), ("issem", "íssen"), ("esses", "isses"), ("esse", "isse"),
+    ("êramos", "íramos"), ("êreis", "írades"), ("íreis", "írades"),
     ("ias", "ies"), ("iam", "ien"), ("ia", "ie"),                             # Convenção p. 20 and 32: die, comie
 ]
 # Preterite 3sg -eu > -iu, Convenção p. 32: comiu. The corpus writes nouns the same way: dius, judius, caldiu.
