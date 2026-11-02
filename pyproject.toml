@@ -9,7 +9,7 @@ description = "Rule-based translator from European Portuguese to Mirandese"
 readme = "README.md"
 license = { text = "Apache-2.0 AND CC-BY-SA-4.0" }
 authors = [{ name = "JarbasAi", email = "jarbasai@mailfence.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = []
 keywords = ["mirandese", "mwl", "portuguese", "machine-translation", "rule-based", "minority-language"]
 classifiers = [
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "pt2mirandese[eval]"]
 eval = ["sacrebleu"]
 
 [project.scripts]
