@@ -2,12 +2,16 @@
 import csv
 import hashlib
 import importlib
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 DATA = ROOT / "pt2mirandese" / "data"
+# The scripts rewrite the lists in this source tree, so they must import this tree's package, not an installed copy
+# that reads its own data.
+SOURCE_ENV = {**os.environ, "PYTHONPATH": os.pathsep.join(filter(None, (str(ROOT), os.environ.get("PYTHONPATH"))))}
 
 
 def load(path):
@@ -32,11 +36,11 @@ def test_the_learner_ignores_the_list_on_disk():
     learn = [sys.executable, str(ROOT / "scripts" / "learn_lexicon.py"), str(ROOT / "gold" / "tatoeba.tsv"),
              str(ROOT / "gold" / "convencao.tsv")]
     try:
-        subprocess.run(learn, check=True, capture_output=True)
+        subprocess.run(learn, check=True, capture_output=True, env=SOURCE_ENV)
         first = (DATA / "lexicon.tsv").read_text(encoding="utf-8")
         (DATA / "lexicon.tsv").write_text("pt\tmwl\tcount\ttotal\n" + "".join(
             f"{w}\tzzz\t9\t9\n" for w in ("o", "a", "de", "que", "não", "eu", "é", "lua", "nos")), encoding="utf-8")
-        subprocess.run(learn, check=True, capture_output=True)
+        subprocess.run(learn, check=True, capture_output=True, env=SOURCE_ENV)
         assert (DATA / "lexicon.tsv").read_text(encoding="utf-8") == first
     finally:
         for f, content in zip(files, kept):
@@ -71,7 +75,7 @@ def test_the_verb_list_is_current():
     path = DATA / "verbs.tsv"
     kept = path.read_bytes()
     try:
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "build_verbs.py")], check=True, capture_output=True)
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "build_verbs.py")], check=True, capture_output=True, env=SOURCE_ENV)
         assert path.read_bytes() == kept, "rebuild with scripts/build_verbs.py"
     finally:
         path.write_bytes(kept)
