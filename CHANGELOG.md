@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.0.1a3](https://github.com/TigreGotico/pt2mirandese/tree/0.0.1a3) (2026-11-27)
+## [0.0.1a4](https://github.com/TigreGotico/pt2mirandese/tree/0.0.1a4) (2026-11-27)
 
-[Full Changelog](https://github.com/TigreGotico/pt2mirandese/compare/0.0.1a2...0.0.1a3)
+[Full Changelog](https://github.com/TigreGotico/pt2mirandese/compare/0.0.1a2...0.0.1a4)
 
 **Merged pull requests:**
 
