@@ -71,7 +71,7 @@ uv run --with sacrebleu --with-editable . python scripts/evaluate.py gold/wikime
 
 ## Other systems
 
-The one other Portuguese to Mirandese system is MADLAD-400 3B (Google, Apache-2.0), which MinT, the Wikimedia translation service, serves for this pair. Apertium has no Mirandese pair. `scripts/baselines.py` runs the CTranslate2 build `santhosh/madlad400-3b-ct2` on the CPU in int8, with greedy decoding, and writes `bench/madlad/`.
+Two other Portuguese to Mirandese systems exist. MADLAD-400 3B (Google, Apache-2.0) is the model that MinT, the Wikimedia translation service, serves for this pair. [tradutor_pertues_mirandes](https://github.com/guillaumeperes/tradutor_pertues_mirandes) is a rule-based translator in JavaScript, with no licence file. Apertium has no Mirandese pair. This page compares pt2mirandese with MADLAD only. `scripts/baselines.py` runs the CTranslate2 build `santhosh/madlad400-3b-ct2` on the CPU in int8, with greedy decoding, and writes `bench/madlad/`.
 
 | Set | MADLAD: exact | MADLAD: chrF2 | Rules alone: chrF2 | pt2mirandese: chrF2 |
 | --- | ---: | ---: | ---: | ---: |
