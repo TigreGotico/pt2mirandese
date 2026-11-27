@@ -1,6 +1,6 @@
 """Translate gold files with another system, for comparison: bench/<system>/<gold file> holds id and hypothesis.
 
-Apertium has no Mirandese pair, so the one other system is madlad: MADLAD-400 3B (Google, Apache-2.0), the
+Apertium has no Mirandese pair. The one system here is madlad: MADLAD-400 3B (Google, Apache-2.0), the
 model that MinT, the Wikimedia translation service, serves for Portuguese to Mirandese. The CTranslate2 build
 santhosh/madlad400-3b-ct2 runs on the CPU in int8 with greedy decoding, and the target tag <2mwl>.
 
